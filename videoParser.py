@@ -8,8 +8,6 @@ import sys
 import time
 import torch
 
-results_list = []
-
 def store_frames(file_name):
     cap = cv.VideoCapture(file_name)
     num_frames = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
@@ -61,6 +59,7 @@ if __name__ == "__main__":
     else:
         file_name = sys.argv[1]
 
+    results_list = mp.Manager().list()
     model = yolov5.load("best.pt")
     # model_dict = torch.load('best.pt')
     # print(model_dict.keys())
@@ -76,9 +75,11 @@ if __name__ == "__main__":
     SCORE_THRESH = 0.4
 
     video_frames, width, height = store_frames(file_name)
-    num_processes = mp.cpu_count()
+    # num_processes = mp.cpu_count() - 2
+    num_processes = 1
 
     frame_chunks = np.array_split(video_frames, num_processes)
+    print(f"Num chunks: {len(frame_chunks)}")
 
     processes = [
         mp.Process(
@@ -98,7 +99,6 @@ if __name__ == "__main__":
 
     print(f"Elapsed: {end - start}")
     print("After processes finished")
-    print(results_list)
 
     i = 0
     while i < len(results_list):

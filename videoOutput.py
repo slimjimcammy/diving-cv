@@ -11,7 +11,7 @@ class VideoOutput:
         self.truncated = False
         print(width, height)
 
-        fourcc = cv.VideoWriter_fourcc(*'avc1')
+        fourcc = cv.VideoWriter_fourcc(*'mp4v')
         self.video_writer = cv.VideoWriter(file_name, fourcc, fps, (int(width), int(height)))
 
         self.thread = Thread(target=self.display, args=())

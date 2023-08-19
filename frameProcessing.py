@@ -1,4 +1,3 @@
-from curses.ascii import alt
 import time
 import cv2 as cv
 import yolov5
@@ -36,25 +35,8 @@ def process_frames(frames, model, SCORE_THRESH=0.4):
         
     return altered_frames
 
-    # altered_frames = []
-
-    # # df = results.pandas().xyxy[0]
-    df = results.pred[0][0]
-    # # print(df)
-    # # df = df[df.confidence > SCORE_THRESH]
-    # print(df)
-
-    # if len(df) > 0:
-    #     start_point = (int(df.xmin[0]), int(df.ymin[0]))
-    #     end_point = (int(df.xmax[0]), int(df.ymax[0]))
-    #     frame = cv.rectangle(frame, start_point, end_point, (0, 0, 255), 5)
-    #     altered_frames.append(frame)
-
-    # return altered_frames
-
 if __name__ == "__main__":
     model = load_model()
-    print("loaded model")
     
     SCORE_THRESH = 0.4
     parser = CmdLineParser()
@@ -66,11 +48,10 @@ if __name__ == "__main__":
 
     width, height, fps, frame_count = video_input.get_info()
 
-    output_file_name = f"{file_name}-processed.mp4"
+    output_file_name = f"{file_name}-processed.mov"
     video_output = VideoOutput(output_file_name, width, height, fps, frame_count)
     video_output.start()
     counter = 0
-    local_queue = []
 
     start = time.time()
     read_all_frames = False
@@ -92,7 +73,6 @@ if __name__ == "__main__":
                 for f in frames:
                     video_output.enqueue_frame(f)
                 frame_batch = []
-            # if video_output.truncated:
 
     frames = process_frames(frame_batch, model, SCORE_THRESH)
     for f in frames:
